@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@lblod/ldes-producer": "^0.7.0-RC2",
+    "@lblod/ldes-producer": "^0.7.0",
     "body-parser": "^1.20.3"
   }
 }
