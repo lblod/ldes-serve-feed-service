@@ -6,6 +6,7 @@ import {
   getConfigFromEnv,
   ACCEPTED_CONTENT_TYPES,
 } from '@lblod/ldes-producer';
+
 app.use(
   bodyParser.json({
     limit: "500mb",
