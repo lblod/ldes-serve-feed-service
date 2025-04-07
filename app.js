@@ -15,6 +15,15 @@ app.use(
     },
   })
 );
+
+if (!process.env.BASE_UR) {
+  throw new Error('Please set the "BASE_URL" environment variable');
+}
+
+if (!process.env.BASE_URL.endsWith("/")) {
+  process.env.BASE_URL += "/";
+}
+
 const config = getConfigFromEnv();
 
 app.get('/:folder*/:nodeId', async function (req, res, next) {
