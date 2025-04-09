@@ -16,7 +16,7 @@ app.use(
   })
 );
 
-if (!process.env.BASE_UR) {
+if (!process.env.BASE_URL) {
   throw new Error('Please set the "BASE_URL" environment variable');
 }
 
