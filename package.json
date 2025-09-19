@@ -2,6 +2,7 @@
   "name": "ldes-serve-feed-service",
   "version": "0.1.1",
   "description": "Microservice to host an LDES feed",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
