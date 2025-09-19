@@ -14,7 +14,7 @@ services:
 
 ## How to guides
 ### How to organize files to host an LDES feed
-Each feed is represented by a subdirectory in `/data`. Each subdirectory contains Turtle files, one per page, with an incremental number as filename (`1.ttl`, `2.ttl`, `3.ttl`, ...) starting at 1.
+Each feed is represented by a subdirectory in `/data`. Each subdirectory may contain other subdirectories and Turtle files. The Turtle files represent the nodes/pages of the LDES feed. The files must be named with an number as filename (`1.ttl`, `2.ttl`, `3.ttl`, ...), starting at 1.
 
 Hence, the folder structure looks as follows:
 ```
@@ -26,9 +26,10 @@ Hence, the folder structure looks as follows:
    |-- 4.ttl
    ...
  |-- another-feed
-   |-- 1.ttl
-   |-- 2.ttl
-   |-- 3.ttl
+   |-- my-subdir
+     |-- 1.ttl
+     |-- 2.ttl
+     |-- 3.ttl
    ...
 ```
 
@@ -43,8 +44,8 @@ The following environment variables can be configured on the service
 - **`BASE_URL`** (optional, default: `http://localhost/`): base URL the feed is hosted on. Required to resolve relative URLs.
 
 ### API
-#### GET /:folder/:node
-Get the given node from an LDES feed.
+#### GET /:folder*/:node
+Get the given node from a folder. Folder may be a nested directory.
 
 Data format can be requested via the `Accept` header. The following formats are supported:
 - `application/ld+json`
