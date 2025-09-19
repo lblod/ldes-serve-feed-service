@@ -1,4 +1,5 @@
 FROM semtech/mu-javascript-template:1.9.1
-LABEL maintainer="Nordine Bittich <contact@bittich.be>"
+LABEL maintainer="redpencil.io <info@redpencil.io>"
 
-# see https://github.com/mu-semtech/mu-javascript-template for more info
+ENV BASE_URL=http://localhost
+ENV DATA_FOLDER=/data
