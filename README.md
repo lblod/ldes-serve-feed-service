@@ -7,7 +7,7 @@ Add the service to your `docker-compose.yml`
 ``` yaml
 services:
   ldes-serve-feed:
-    image: lblod/ldes-serve-feed-service:0.2.0
+    image: lblod/ldes-serve-feed-service:0.3.0
     volumes:
       - ./data/ldes:/data
 ```

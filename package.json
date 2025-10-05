@@ -1,6 +1,6 @@
 {
   "name": "ldes-serve-feed-service",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Microservice to host an LDES feed",
   "type": "module",
   "main": "app.js",
