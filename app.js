@@ -48,8 +48,8 @@ app.get('/*', async function (req, res, next) {
               ${sparqlEscapeUri(sessionId)} session:account ?account.
           }
       }`;
-      const res = await query(askQuery, {sudo: true});
-      if(!res.boolean) {
+      const response = await query(askQuery, {sudo: true});
+      if(!response.boolean) {
         return res.status(401).send();
       }
     }
