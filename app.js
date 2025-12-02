@@ -1,4 +1,4 @@
-import { app, errorHandler } from 'mu';
+import { app, errorHandler, query, sparqlEscapeUri } from 'mu';
 import bodyParser from 'body-parser';
 import {
   getLastPage,
@@ -6,6 +6,10 @@ import {
   getConfigFromEnv,
   ACCEPTED_CONTENT_TYPES,
 } from '@lblod/ldes-producer';
+
+const HEADER_MU_SESSION_ID = "mu-session-id";
+const SESSION_GRAPH = process.env.SESSION_GRAPH || "http://mu.semte.ch/graphs/sessions";
+const AUTHENTICATED_LDES_FEED = (process.env.AUTHENTICATED_LDES_FEED || "false").toLowerCase() === "true";
 
 app.use(
   bodyParser.json({
@@ -28,6 +32,28 @@ const config = getConfigFromEnv();
 
 app.get('/*', async function (req, res, next) {
   try {
+    
+    if(AUTHENTICATED_LDES_FEED) {
+      const sessionId = req.get(HEADER_MU_SESSION_ID);
+      if(!sessionId) {
+        return res.status(401).send();
+      }
+      const askQuery = `
+      PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
+      PREFIX session: <http://mu.semte.ch/vocabularies/session/>
+      PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      ASK {
+          GRAPH <${SESSION_GRAPH}> {
+              ${sparqlEscapeUri(sessionId)} session:account ?account.
+          }
+      }`;
+      const response = await query(askQuery, {sudo: true});
+      if(!response.boolean) {
+        return res.status(401).send();
+      }
+    }
+
     const contentType = req.accepts(ACCEPTED_CONTENT_TYPES) || '';
 
     let folder, resource, nodeId;
