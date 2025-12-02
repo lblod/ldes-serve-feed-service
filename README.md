@@ -42,6 +42,8 @@ For example, if your stack is running on `https://my-app.example.com` and the di
 ### Configuration
 The following environment variables can be configured on the service
 - **`BASE_URL`** (optional, default: `http://localhost/`): base URL the feed is hosted on. Required to resolve relative URLs.
+- **`AUTHENTICATED_LDES_FEED`** (optional, default: `false`): weither or not the ldes feed requires authentication.
+- **`SESSION_GRAPH`** (optional, default: `http://mu.semte.ch/graphs/sessions`): session graph.
 
 ### API
 #### GET /:folder*/:node
