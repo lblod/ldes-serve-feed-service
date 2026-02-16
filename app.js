@@ -26,14 +26,19 @@ if (!process.env.BASE_URL.endsWith("/")) {
 
 const config = getConfigFromEnv();
 
-
-
 const ENABLE_BASIC_AUTH = process.env.ENABLE_BASIC_AUTH === 'true' ? true : false;
 const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME || 'username';
 const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD || 'password';
+const BASIC_AUTH_FOLDERS = process.env.BASIC_AUTH_FOLDERS && JSON.parse(process.env.BASIC_AUTH_FOLDERS);
 
 const basicAuthMiddleware = (req, res, next) => {
-  if (ENABLE_BASIC_AUTH) {
+  const segments = req.params[0]?.split('/');
+  const folder = segments?.[0];
+  if(!folder){
+    res.status(404).send();
+  }
+  const shouldUseBasicAuth = ENABLE_BASIC_AUTH && (!BASIC_AUTH_FOLDERS || BASIC_AUTH_FOLDERS.includes(folder));
+  if (shouldUseBasicAuth) {
     if (req.headers.authorization?.startsWith('Basic ')) {
       const b64value = req.headers.authorization.split(' ')[1];
       const [username, password] = Buffer.from(b64value, 'base64')
@@ -48,9 +53,7 @@ const basicAuthMiddleware = (req, res, next) => {
   return next();
 };
 
-app.use(basicAuthMiddleware);
-
-app.get('/*', async function (req, res, next) {
+app.get('/*', basicAuthMiddleware, async function (req, res, next) {
   try {
     const contentType = req.accepts(ACCEPTED_CONTENT_TYPES) || '';
 
