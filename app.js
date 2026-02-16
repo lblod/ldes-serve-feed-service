@@ -37,6 +37,9 @@ const basicAuthMiddleware = (req, res, next) => {
   if(!folder){
     res.status(404).send();
   }
+  // Checks whether `ENABLE_BASIC_AUTH` is true and either:
+  // - `BASIC_AUTH_FOLDERS` is not provided: all folders/feeds are protected
+  // - `BASIC_AUTH_FOLDERS` is provided and the requested folder is in it
   const shouldUseBasicAuth = ENABLE_BASIC_AUTH && (!BASIC_AUTH_FOLDERS || BASIC_AUTH_FOLDERS.includes(folder));
   if (shouldUseBasicAuth) {
     if (req.headers.authorization?.startsWith('Basic ')) {
