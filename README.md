@@ -42,6 +42,10 @@ For example, if your stack is running on `https://my-app.example.com` and the di
 ### Configuration
 The following environment variables can be configured on the service
 - **`BASE_URL`** (optional, default: `http://localhost/`): base URL the feed is hosted on. Required to resolve relative URLs.
+- **`ENABLE_BASIC_AUTH`** (optional, default: `false`): whether or not to enable basic auth
+- **`BASIC_AUTH_USERNAME`** (optional, default: `username`): the basic auth username
+- **`BASIC_AUTH_PASSWORD`** (optional, default: `password`): the basic auth password
+- **`BASIC_AUTH_FOLDERS`** (optional, default: `undefined`): the folders/feeds to apply basic auth on (stringified array). If this environment variable is not provided, and `ENABLE_BASIC_AUTH` is `true`, basic auth is applied to all folders/feeds.
 
 ### API
 #### GET /:folder*/:node
