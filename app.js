@@ -1,5 +1,7 @@
 import { app, errorHandler } from 'mu';
 import bodyParser from 'body-parser';
+import fs from 'fs';
+import path from 'path';
 import {
   getLastPage,
   getNode as getNodeFn,
@@ -55,6 +57,36 @@ const basicAuthMiddleware = (req, res, next) => {
   }
   return next();
 };
+
+if (process.env.DEBUG_MODE === 'true') {
+  // Pages are the <n>.ttl files of a feed, possibly in subfolders (e.g. "3" or "my-subdir/3")
+  const listPages = (feed) =>
+    fs.readdirSync(path.join(config.baseFolder, feed), { recursive: true })
+      .filter((file) => /^(.*\/)?\d+\.ttl$/.test(file))
+      .map((file) => file.replace(/\.ttl$/, ''))
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+  app.get('/_debug/summary', function (req, res) {
+    const feeds = fs.readdirSync(config.baseFolder, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => ({ feed: entry.name, pages: listPages(entry.name).length }));
+    res.send(feeds);
+  });
+
+  app.get('/_debug/:feed', function (req, res) {
+    if (!fs.existsSync(path.join(config.baseFolder, req.params.feed))) {
+      return res.status(404).send();
+    }
+    res.send(listPages(req.params.feed));
+  });
+
+  app.get('/_debug/:feed/*', function (req, res) {
+    res.sendFile(`${req.params[0]}.ttl`, {
+      root: path.join(config.baseFolder, req.params.feed),
+      headers: { 'Content-Type': 'text/turtle' },
+    });
+  });
+}
 
 app.get('/*', basicAuthMiddleware, async function (req, res, next) {
   try {
