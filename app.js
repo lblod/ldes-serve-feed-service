@@ -60,11 +60,14 @@ const basicAuthMiddleware = (req, res, next) => {
 
 if (process.env.DEBUG_MODE === 'true') {
   // Pages are the <n>.ttl files of a feed, possibly in subfolders (e.g. "3" or "my-subdir/3")
-  const listPages = (feed) =>
-    fs.readdirSync(path.join(config.baseFolder, feed), { recursive: true })
+  const listPages = (feed) => {
+    const folder = path.join(config.baseFolder, feed);
+    return fs.readdirSync(folder, { recursive: true })
       .filter((file) => /^(.*\/)?\d+\.ttl$/.test(file))
-      .map((file) => file.replace(/\.ttl$/, ''))
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      .map((file) => ({ file, created: fs.statSync(path.join(folder, file)).birthtimeMs }))
+      .sort((a, b) => a.created - b.created)
+      .map(({ file }) => file.replace(/\.ttl$/, ''));
+  };
 
   app.get('/_debug/summary', function (req, res) {
     const feeds = fs.readdirSync(config.baseFolder, { withFileTypes: true })
